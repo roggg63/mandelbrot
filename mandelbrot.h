@@ -3,6 +3,7 @@
 #include <raylib.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <arm_neon.h>
 
 const static int max_iter = 255;
 
