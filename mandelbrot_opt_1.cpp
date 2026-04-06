@@ -92,9 +92,6 @@ void open_graphic_window() {
                 float cur_x3 = 0, cur_y3 = 0;
                 float cur_x4 = 0, cur_y4 = 0;
 
-                float x_next = 0.0;
-                float y_next = 0.0;
-
                 for (int iter = 0; iter < max_iter; iter++) {
                     float cur_x1_2 = cur_x1 * cur_x1;
                     float cur_x2_2 = cur_x2 * cur_x2;
@@ -115,19 +112,19 @@ void open_graphic_window() {
                         break;
                     }
 
-                    cur_y1 = res_1 ? (2.0*cur_x1*cur_y1 + y_0) : cur_y1;
+                    cur_y1 = res_1 ? (2*cur_x1*cur_y1 + y_0) : cur_y1;
                     cur_x1 = res_1 ? (cur_x1_2 - cur_y1_2 + x0_1) : cur_x1;
                     it1 += res_1;
 
-                    cur_y2 = res_2 ? (2.0*cur_x2*cur_y2 + y_0) : cur_y2;
+                    cur_y2 = res_2 ? (2*cur_x2*cur_y2 + y_0) : cur_y2;
                     cur_x2 = res_2 ? (cur_x2_2 - cur_y2_2 + x0_2) : cur_x2;
                     it2 += res_2;
 
-                    cur_y3 = res_3 ? (2.0*cur_x3*cur_y3 + y_0) : cur_y3;
+                    cur_y3 = res_3 ? (2*cur_x3*cur_y3 + y_0) : cur_y3;
                     cur_x3 = res_3 ? (cur_x3_2 - cur_y3_2 + x0_3) : cur_x3;
                     it3 += res_3;
 
-                    cur_y4 = res_4 ? (2.0*cur_x4*cur_y4 + y_0) : cur_y4;
+                    cur_y4 = res_4 ? (2*cur_x4*cur_y4 + y_0) : cur_y4;
                     cur_x4 = res_4 ? (cur_x4_2 - cur_y4_2 + x0_4) : cur_x4;
                     it4 += res_4;
                 }
