@@ -87,6 +87,9 @@ void open_graphic_window() {
                 int it3 = 0;
                 int it4 = 0;
 
+                int res = 15;
+                int iters[4] = {};
+
                 float cur_x1 = 0, cur_y1 = 0;
                 float cur_x2 = 0, cur_y2 = 0;
                 float cur_x3 = 0, cur_y3 = 0;
