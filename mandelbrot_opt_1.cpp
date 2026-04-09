@@ -75,72 +75,97 @@ void open_graphic_window() {
         }
 
         for (int y = 0; y < screen_height; y++) {
-            float y_0 = min_y + y * scale_y;
+            float y__0 = min_y + y * scale_y;
+            float y_0[4] = {y__0, y__0, y__0, y__0};
             for (int x = 0; x < screen_width; x+=4) {
-                float x0_1 = min_x + (x + 0) * scale_x;
-                float x0_2 = min_x + (x + 1) * scale_x;
-                float x0_3 = min_x + (x + 2) * scale_x;
-                float x0_4 = min_x + (x + 3) * scale_x;
+                float x_0[4] = {};
+                for (int i = 0; i < 4; i++) {
+                    x_0[i] = min_x + (x + i) * scale_x;
+                }
 
-                int it1 = 0;
-                int it2 = 0;
-                int it3 = 0;
-                int it4 = 0;
-
-                int res = 15;
                 int iters[4] = {};
 
-                float cur_x1 = 0, cur_y1 = 0;
-                float cur_x2 = 0, cur_y2 = 0;
-                float cur_x3 = 0, cur_y3 = 0;
-                float cur_x4 = 0, cur_y4 = 0;
+                float cur_x[4] = {};
+                float cur_y[4] = {};
 
                 for (int iter = 0; iter < max_iter; iter++) {
-                    float cur_x1_2 = cur_x1 * cur_x1;
-                    float cur_x2_2 = cur_x2 * cur_x2;
-                    float cur_x3_2 = cur_x3 * cur_x3;
-                    float cur_x4_2 = cur_x4 * cur_x4;
+                    float cur_x2[4] = {};
+                    float cur_y2[4] = {};
+                    float sum2[4] = {};
+                    int rad_f[4] = {};
 
-                    float cur_y1_2 = cur_y1 * cur_y1;
-                    float cur_y2_2 = cur_y2 * cur_y2;
-                    float cur_y3_2 = cur_y3 * cur_y3;
-                    float cur_y4_2 = cur_y4 * cur_y4;
+                    #pragma clang loop vectorize(enable) unroll(disable)
+                    for (int i = 0; i < 4; i++) {
+                        cur_x2[i] = cur_x[i] * cur_x[i];
+                        cur_y2[i] = cur_y[i] * cur_y[i];
+                        sum2[i] = cur_x2[i] + cur_y2[i];
+                        rad_f[i] = (float) (sum2[i] <= 4.0f);
+                    }
 
-                    int res_1 = (cur_x1_2 + cur_y1_2 <= 4.0f);
-                    int res_2 = (cur_x2_2 + cur_y2_2 <= 4.0f);
-                    int res_3 = (cur_x3_2 + cur_y3_2 <= 4.0f);
-                    int res_4 = (cur_x4_2 + cur_y4_2 <= 4.0f);
-
-                    if (!(res_1 || res_2 || res_3 || res_4)) {
+                    if (!((int)rad_f[0] || (int)rad_f[1] || (int)rad_f[2] || (int)rad_f[3])) {
                         break;
                     }
 
-                    cur_y1 = res_1 ? (2.0f*cur_x1*cur_y1 + y_0) : cur_y1;
-                    cur_x1 = res_1 ? (cur_x1_2 - cur_y1_2 + x0_1) : cur_x1;
-                    it1 += res_1;
+                    #pragma clang loop vectorize(enable) unroll(disable)
+                    for (int i = 0; i < 4; i++) {
+                        float new_cur_y = 2.0f*cur_x[i]*cur_y[i] + y_0[i];
+                        float new_cur_x = cur_x2[i] - cur_y2[i] + x_0[i];
 
-                    cur_y2 = res_2 ? (2.0f*cur_x2*cur_y2 + y_0) : cur_y2;
-                    cur_x2 = res_2 ? (cur_x2_2 - cur_y2_2 + x0_2) : cur_x2;
-                    it2 += res_2;
+                        cur_y[i] = rad_f[i] * new_cur_y + (1.0f - rad_f[i]) * cur_y[i];
+                        cur_x[i] = rad_f[i] * new_cur_x + (1.0f - rad_f[i]) * cur_x[i];
 
-                    cur_y3 = res_3 ? (2.0f*cur_x3*cur_y3 + y_0) : cur_y3;
-                    cur_x3 = res_3 ? (cur_x3_2 - cur_y3_2 + x0_3) : cur_x3;
-                    it3 += res_3;
+                        iters[i] += (int)rad_f[i];
+                    }
+                    //float cur_x1_2 = cur_x1 * cur_x1;
+                    //float cur_x2_2 = cur_x2 * cur_x2;
+                    //float cur_x3_2 = cur_x3 * cur_x3;
+                    //float cur_x4_2 = cur_x4 * cur_x4;
 
-                    cur_y4 = res_4 ? (2.0f*cur_x4*cur_y4 + y_0) : cur_y4;
-                    cur_x4 = res_4 ? (cur_x4_2 - cur_y4_2 + x0_4) : cur_x4;
-                    it4 += res_4;
+                    //float cur_y1_2 = cur_y1 * cur_y1;
+                    //float cur_y2_2 = cur_y2 * cur_y2;
+                    //float cur_y3_2 = cur_y3 * cur_y3;
+                    //float cur_y4_2 = cur_y4 * cur_y4;
+
+                    //int res_1 = (cur_x1_2 + cur_y1_2 <= 4.0f);
+                    //int res_2 = (cur_x2_2 + cur_y2_2 <= 4.0f);
+                    //int res_3 = (cur_x3_2 + cur_y3_2 <= 4.0f);
+                    //int res_4 = (cur_x4_2 + cur_y4_2 <= 4.0f);
+
+                    //if (!(res_1 || res_2 || res_3 || res_4)) {
+                    //    break;
+                    //}
+
+                    //cur_y1 = res_1 ? (2.0f*cur_x1*cur_y1 + y_0) : cur_y1;
+                    //cur_x1 = res_1 ? (cur_x1_2 - cur_y1_2 + x0_1) : cur_x1;
+                    //it1 += res_1;
+
+                    //cur_y2 = res_2 ? (2.0f*cur_x2*cur_y2 + y_0) : cur_y2;
+                    //cur_x2 = res_2 ? (cur_x2_2 - cur_y2_2 + x0_2) : cur_x2;
+                    //it2 += res_2;
+
+                    //cur_y3 = res_3 ? (2.0f*cur_x3*cur_y3 + y_0) : cur_y3;
+                    //cur_x3 = res_3 ? (cur_x3_2 - cur_y3_2 + x0_3) : cur_x3;
+                    //it3 += res_3;
+
+                    //cur_y4 = res_4 ? (2.0f*cur_x4*cur_y4 + y_0) : cur_y4;
+                    //cur_x4 = res_4 ? (cur_x4_2 - cur_y4_2 + x0_4) : cur_x4;
+                    //it4 += res_4;
                 }
 
-                Color color_1 = Get_Mandelbrot_color(it1);
-                Color color_2 = Get_Mandelbrot_color(it2);
-                Color color_3 = Get_Mandelbrot_color(it3);
-                Color color_4 = Get_Mandelbrot_color(it4);
+                for (int i = 0; i < 4; i++) {
+                    Color color_i = Get_Mandelbrot_color(iters[i]);
+                    ImageDrawPixel(&image, x+i, y, color_i);
+                }
 
-                ImageDrawPixel(&image, x+0, y, color_1);
-                ImageDrawPixel(&image, x+1, y, color_2);
-                ImageDrawPixel(&image, x+2, y, color_3);
-                ImageDrawPixel(&image, x+3, y, color_4);
+                //Color color_1 = Get_Mandelbrot_color(it1);
+                //Color color_2 = Get_Mandelbrot_color(it2);
+                //Color color_3 = Get_Mandelbrot_color(it3);
+                //Color color_4 = Get_Mandelbrot_color(it4);
+
+                //ImageDrawPixel(&image, x+0, y, color_1);
+                //ImageDrawPixel(&image, x+1, y, color_2);
+                //ImageDrawPixel(&image, x+2, y, color_3);
+                //ImageDrawPixel(&image, x+3, y, color_4);
             }
         }
 
