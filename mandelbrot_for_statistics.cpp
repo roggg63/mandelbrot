@@ -14,6 +14,7 @@ int Mandelbrot_color(float x_0, float y_0) {
     float y = 0;
     int iter = 0;
 
+
     while (iter < max_iter && (x*x + y*y) <= 4.0) {
         float x_next = x*x - y*y + x_0;
         float y_next = 2.0*x*y + y_0;
@@ -40,6 +41,8 @@ int main() {
     const int screen_width = 650;
     const int screen_height = 650;
 
+    long long total = 0;
+
     float scale_x = (max_x - min_x) / screen_width;
     float scale_y = (max_y - min_y) / screen_height;
 
@@ -50,6 +53,10 @@ int main() {
 
                 int color = Mandelbrot_color(x_0, y_0);
 
+                total += color;
+
         }
     }
+
+    printf("total: %lld", total);
 }

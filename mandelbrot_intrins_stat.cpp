@@ -34,6 +34,8 @@ int main() {
     float scale_x = (max_x - min_x) / screen_width;
     float scale_y = (max_y - min_y) / screen_height;
 
+    long long total = 0;
+
     for (int y = 0; y < screen_height; y++) {
         float y_0 = min_y + y * scale_y;
         float32x4_t vect_y0 = vdupq_n_f32(y_0);
@@ -85,7 +87,9 @@ int main() {
 
             for (int i = 0; i < 4; i++) {
                 int color = Get_Mandelbrot_color(final_iters[i]);
+                total += color;
             }
         }
     }
+    printf("total: %lld", total);
 }
